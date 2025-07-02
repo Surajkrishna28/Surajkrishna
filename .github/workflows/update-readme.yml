@@ -1,28 +1,28 @@
-name: Update README for Tracker
+name: GitHub Visit Tracker
 
 on:
+  workflow_dispatch:
   schedule:
-    - cron: '0 * * * *'  # Runs every hour
-  workflow_dispatch:      # Allows manual runs from GitHub UI
+    - cron: '0 * * * *'  # Every 1 hour
 
 jobs:
-  update-readme:
+  update-timestamp:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo
+      - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Update README Timestamp
+      - name: Update timestamp in README
         run: |
-          ts=$(date)
-          echo "⏱ Last update: $ts" > README.md
+          echo "Last visit: $(date -u)" > README.md
 
       - name: Commit and Push Changes
         run: |
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git add README.md
-          git commit -m "🔁 Update tracker timestamp: $ts" || echo "No changes"
+          git commit -m "🔁 Update tracker timestamp: $(date -u)" || echo "No changes to commit"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
