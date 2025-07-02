@@ -1,0 +1,25 @@
+name: Update README for Tracker
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Runs every hour
+  workflow_dispatch:      # Allows manual run
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Update Tracker Timestamp
+        run: |
+          ts=$(date +%s)
+          sed -i "s|myfunctiongittracker?v=.*|myfunctiongittracker?v=${ts}|g" README.md
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git commit -am "🔁 Update tracker timestamp: $ts" || echo "No changes"
+          git push
