@@ -1,4 +1,4 @@
-- name: Commit and Push Changes
+  name: Commit and Push Changes
   run: |
     git config --global user.email "action@github.com"
     git config --global user.name "GitHub Action"
